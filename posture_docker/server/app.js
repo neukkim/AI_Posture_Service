@@ -33,12 +33,14 @@ const mainRouter    = require('./routes/index');
 const userRouter    = require('./routes/user');
 const mypageRouter    = require('./routes/mypage');
 const postureRouter = require('./routes/posture');
+const posture2Router = require('./routes/posture2');
 
 //라우트 설정
 app.use('/', mainRouter);
 app.use('/user', userRouter);
 app.use('/mypage', mypageRouter);
 app.use('/posture', postureRouter);
+app.use('/posture2', posture2Router);
 
 const PORT = 8080;
 app.listen(PORT, function() {
