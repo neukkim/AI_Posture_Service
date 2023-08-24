@@ -31,10 +31,14 @@ app.use(express.urlencoded({ extended: false }));
 //라우트 객체 생성
 const mainRouter    = require('./routes/index');
 const userRouter    = require('./routes/user');
+const mypageRouter    = require('./routes/mypage');
+const postureRouter = require('./routes/posture');
 
 //라우트 설정
 app.use('/', mainRouter);
 app.use('/user', userRouter);
+app.use('/mypage', mypageRouter);
+app.use('/posture', postureRouter);
 
 const PORT = 8080;
 app.listen(PORT, function() {

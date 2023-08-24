@@ -18,7 +18,12 @@ router.get('/signout', function(req, res, next) {
 
 
 router.get('/signin', async function(req, res) {
-	res.render('signin');
+    //userID를 view에 같이 넘겨주는 기능
+    let userId = null;
+    if (req.session.passport != undefined) {
+        userId = req.session.passport.user.user;
+    }
+    res.render('signin', {userId: userId});
 });
 router.post('/signin', passport.authenticate('local-login', {
     successRedirect: '/',
@@ -26,7 +31,12 @@ router.post('/signin', passport.authenticate('local-login', {
 }));
 
 router.get('/signup', async function(req, res) { 
-    res.render('signup');
+    //userID를 view에 같이 넘겨주는 기능
+    let userId = null;
+    if (req.session.passport != undefined) {
+        userId = req.session.passport.user.user;
+    }
+    res.render('signup', {userId: userId});
 });
 
 router.post('/signup', async function(req, res) {
