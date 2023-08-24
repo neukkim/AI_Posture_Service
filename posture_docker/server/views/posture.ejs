@@ -2,17 +2,29 @@
     <%- include('./header') %>
 </header>
 <main>
+    
 
     <div>Teachable Machine Image Model</div>
+    <button type="button" onclick="shutdown()">닥쳐</button>
+    <script>
+        
+        if (flag == 1) {
+            <button type="button" onclick="shutdown()">다시 소리</button>
+        } 
+    </script>
 
-    <!--<button type="button" onclick="init()">Start</button>-->
+
+
     <div id="webcam-container"></div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    
+    <script
+        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
 
     <script type="text/javascript">
+        var flag = 0;
+
 
         // More API functions here:
         // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
@@ -21,6 +33,7 @@
         const URL = "https://teachablemachine.withgoogle.com/models/hdpukdrm4/";
 
         let model, webcam, labelContainer, maxPredictions;
+
 
         // Load the image model and setup the webcam
         async function init() {
@@ -39,7 +52,7 @@
             webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
             await webcam.setup(); // request access to the webcam
             await webcam.play();
-            webcam.setTopMost(true);
+
             window.requestAnimationFrame(loop);
 
             // append elements to the DOM
@@ -54,11 +67,17 @@
             webcam.update(); // update the webcam frame
             await predict();
             window.requestAnimationFrame(loop);
+            if (flag == 1) {
+                audio.pause();
+                audio.currentTime = 0; //소리파일 처음부터 되게 초기화
+            }
+
         }
 
-        
+
 
         turtlecnt = 0;
+        var audio = new Audio('warning2.m4a');
         // run the webcam image through the image model
         async function predict() {
             // predict can take in an image, video or canvas html element
@@ -68,18 +87,28 @@
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
                 if (prediction[i].className == "turtle" && prediction[i].probability > 0.5) {
-                turtlecnt++;
+                    turtlecnt++;
+                }
+            }
+            if (turtlecnt >= 120) {
+                console.log('audio start'); //F12
+                turtlecnt = 0;
+
+                audio.play();
             }
         }
-        if (turtlecnt >= 120) {
-						console.log('audio start'); //F12
-            turtlecnt = 0;
-            var audio = new Audio('warning2.m4a');
-            audio.play();
-        }
+
+        async function shutdown() {
+            if (flag == 0) {
+                flag = 1;
             }
-        
-    init();
+            else {
+                flag = 0;
+            }
+        }
+
+        init();
+
     </script>
 
 </main>
