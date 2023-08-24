@@ -3,83 +3,67 @@
 </header>
 <main>
 
-    <div>Teachable Machine Image Model</div>
+    <div class="container">  
+        <input type="file" id="input_image" accept="image/*" onchange="loadImage(this)">
+        <br>
+        <img id="preview" width="640"/>
+        <br><br>
+        <button type="button" class="btn btn-primary" id="pred_button" onclick="predict()">예측</button>
+        <div id="prediction"></div>
+    </div>
 
-    <!--<button type="button" onclick="init()">Start</button>-->
-    <div id="webcam-container"></div>
-    <div id="label-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
     
+<script>
 
-    <script type="text/javascript">
+let model;
+async function app() {
+    model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs/model.json');
+}
+//이미지 업로드
+function loadImage(input) {
+    if (input.files && input.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview').src = e.target.result;
+            console.log(e.target.result)
+        };       
+        reader.readAsDataURL( input.files[0] );
+    } 
+};
+    //예측
+async function predict() {
+    let image = document.getElementById("preview");
+            // 이미지 픽셀값을 텐서로 변환
+    image = tf.browser.fromPixels(image);
+            // 이미지 사이즈 조절, div(255) : 0-1 사이의 값으로 정규화
+    image = tf.image.resizeBilinear(image, [224,224]).div(255);
+            // 차원 확대(shape 변경, axis=0), (224, 244)를 (1, 224, 224)로 변환
+    image = tf.expandDims(image, 0)
+            // arraySync() : 텐서를 배열로 변환하여 반환
+            
+    pred = model.predict(image).arraySync();
+            // topk : top K 반환(예측 결과 중 가장 정확도가 높은 3개의 확률과 인덱스 반환)
+    const { values, indices } = tf.topk(pred, 4);
+    const index = indices.arraySync()[0];
+    const probability = values.arraySync()[0];
+    console.log(index, probability);
+    
+    let html = '';
+    for (let i=0; i<index.length; i++) {
+        html += `${imagenetLabels[index[i]]} : ${probability[i]}<br>`;
+    }
+    document.getElementById('prediction').innerHTML = html;
 
-        // More API functions here:
-        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+}
+    app();
 
-        // the link to your model provided by Teachable Machine export panel
-        const URL = "https://teachablemachine.withgoogle.com/models/hdpukdrm4/";
+    imagenetLabels = [
+        "chin",
+        "normal",
+        "noshow",
+        "turtle",
+    ];
 
-        let model, webcam, labelContainer, maxPredictions;
-
-        // Load the image model and setup the webcam
-        async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-
-            // load the model and metadata
-            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-            // or files from your local hard drive
-            // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-
-            // Convenience function to setup a webcam
-            const flip = true; // whether to flip the webcam
-            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-            await webcam.setup(); // request access to the webcam
-            await webcam.play();
-            webcam.setTopMost(true);
-            window.requestAnimationFrame(loop);
-
-            // append elements to the DOM
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) { // and class labels
-                labelContainer.appendChild(document.createElement("div"));
-            }
-        }
-
-        async function loop() {
-            webcam.update(); // update the webcam frame
-            await predict();
-            window.requestAnimationFrame(loop);
-        }
-
-        
-
-        turtlecnt = 0;
-        // run the webcam image through the image model
-        async function predict() {
-            // predict can take in an image, video or canvas html element
-            const prediction = await model.predict(webcam.canvas);
-            for (let i = 0; i < maxPredictions; i++) {
-                const classPrediction =
-                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                labelContainer.childNodes[i].innerHTML = classPrediction;
-                if (prediction[i].className == "turtle" && prediction[i].probability > 0.5) {
-                turtlecnt++;
-            }
-        }
-        if (turtlecnt >= 120) {
-						console.log('audio start'); //F12
-            turtlecnt = 0;
-            var audio = new Audio('warning2.m4a');
-            audio.play();
-        }
-            }
-        
-    init();
-    </script>
-
+</script>
 </main>
