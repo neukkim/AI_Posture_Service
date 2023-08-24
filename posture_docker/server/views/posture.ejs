@@ -39,7 +39,7 @@
             webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
             await webcam.setup(); // request access to the webcam
             await webcam.play();
-            //webcam.setTopMost(true);
+            webcam.setTopMost(true);
             window.requestAnimationFrame(loop);
 
             // append elements to the DOM
