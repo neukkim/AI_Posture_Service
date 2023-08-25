@@ -25,8 +25,8 @@ function loadImage(input) {
     if (input.files && input.files[0]) {
         let reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('preview').src = e.target.result;
-            console.log(e.target.result)
+            document.getElementById('preview').src = e.target.result;       
+ //           console.log(e.target.result)
         };       
         reader.readAsDataURL( input.files[0] );
     } 
@@ -34,10 +34,15 @@ function loadImage(input) {
     //예측
 async function predict() {
     let image = document.getElementById("preview");
+
             // 이미지 픽셀값을 텐서로 변환
     image = tf.browser.fromPixels(image);
             // 이미지 사이즈 조절, div(255) : 0-1 사이의 값으로 정규화
+
+    console.log(image)
+
     image = tf.image.resizeBilinear(image, [224,224]).div(255);
+    console.log(image)
             // 차원 확대(shape 변경, axis=0), (224, 244)를 (1, 224, 224)로 변환
     image = tf.expandDims(image, 0)
             // arraySync() : 텐서를 배열로 변환하여 반환
@@ -47,7 +52,7 @@ async function predict() {
     const { values, indices } = tf.topk(pred, 4);
     const index = indices.arraySync()[0];
     const probability = values.arraySync()[0];
-    console.log(index, probability);
+ //   console.log(index, probability);
     
     let html = '';
     for (let i=0; i<index.length; i++) {
