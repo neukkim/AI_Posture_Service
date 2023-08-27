@@ -34,7 +34,7 @@ function loadImage(input) {
     //예측
 async function predict() {
     let image = document.getElementById("preview");
-
+    console.log(image)
             // 이미지 픽셀값을 텐서로 변환
     image = tf.browser.fromPixels(image);
             // 이미지 사이즈 조절, div(255) : 0-1 사이의 값으로 정규화

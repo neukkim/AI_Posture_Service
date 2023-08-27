@@ -34,6 +34,8 @@ const userRouter    = require('./routes/user');
 const mypageRouter    = require('./routes/mypage');
 const postureRouter = require('./routes/posture');
 const posture2Router = require('./routes/posture2');
+const posture3Router = require('./routes/posture3');
+const posture4Router = require('./routes/posture4');
 const webcamtestRouter = require('./routes/webcamtest');
 
 //라우트 설정
@@ -42,6 +44,8 @@ app.use('/user', userRouter);
 app.use('/mypage', mypageRouter);
 app.use('/posture', postureRouter);
 app.use('/posture2', posture2Router);
+app.use('/posture3', posture3Router);
+app.use('/posture4', posture4Router);
 app.use('/webcamtest', webcamtestRouter);
 
 const PORT = 8080;
