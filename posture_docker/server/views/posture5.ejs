@@ -34,7 +34,8 @@
 
     async function app() {
 //        model = await mobilenet.load()
-        model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs01/model.json')
+//        model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs01/model.json')
+        model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs/model.json')
 				//웹캠 비디오 스트림을 텐서로 변환하기 위한 객체 생성, .capture()를 통해 이미지를 받아올 수 있음
         webcam = await tf.data.webcam(video, {
             resizeWidth: 224,
@@ -111,15 +112,16 @@
         if(index[0] == 2){
             noshowCnt++
             console.log("noshowCnt:" + noshowCnt)
-            popup()
+  //          popup()
         }
         if(index[0] == 3){
             turtleCnt++
+            popup()
             console.log("turtleCnt:" + turtleCnt)
         }
 
-    //    pScore = normalCnt / (chinCnt + normalCnt + turtleCnt) * 100
-        pScore = chinCnt / (chinCnt + normalCnt + turtleCnt) * 100
+        pScore = normalCnt / (chinCnt + normalCnt + turtleCnt) * 100
+    //    pScore = chinCnt / (chinCnt + normalCnt + turtleCnt) * 100
         pScore = parseInt(pScore)
         console.log("pScore" + pScore)
         document.getElementById('pScore').innerHTML = "자세점수: " + pScore;
