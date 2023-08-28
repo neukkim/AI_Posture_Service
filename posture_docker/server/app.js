@@ -37,6 +37,7 @@ const userRouter    = require('./routes/user');
 const mypageRouter    = require('./routes/mypage');
 const postureRouter = require('./routes/posture');
 const tempRouter = require('./routes/temp');
+const temp2Router = require('./routes/temp2');
 const teamRouter = require('./routes/team');
 
 
@@ -46,6 +47,7 @@ app.use('/user', userRouter);
 app.use('/mypage', mypageRouter);
 app.use('/posture', postureRouter);
 app.use('/temp', tempRouter);
+app.use('/temp2', temp2Router);
 app.use('/team', teamRouter);
 
 const PORT = 8080;
