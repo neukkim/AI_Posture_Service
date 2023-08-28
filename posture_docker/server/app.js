@@ -38,6 +38,7 @@ const posture3Router = require('./routes/posture3');
 const posture4Router = require('./routes/posture4');
 const posture5Router = require('./routes/posture5');
 const posture6Router = require('./routes/posture6');
+const posture7Router = require('./routes/posture7');
 const webcamtestRouter = require('./routes/webcamtest');
 const testRouter = require('./routes/test');
 
@@ -51,6 +52,7 @@ app.use('/posture3', posture3Router);
 app.use('/posture4', posture4Router);
 app.use('/posture5', posture5Router);
 app.use('/posture6', posture6Router);
+app.use('/posture7', posture7Router);
 app.use('/test', testRouter);
 
 const PORT = 8080;

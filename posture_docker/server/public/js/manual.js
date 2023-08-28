@@ -1,8 +1,6 @@
 
 function graphD()
 {
-var dataSet = [10,10,10,10];
-var ttext = "text"
 
 d3.select("#myGraph") //svg 요소 선택
 .append("rect") //svg 사각형 생성
