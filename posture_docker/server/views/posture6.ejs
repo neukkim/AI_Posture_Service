@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script> <!-- d3.js 서버에서 호출-->
+    <script src="js/manual.js"></script>
+
+    <style>
+    div.left {
+        width: 50%;
+        float: left;
+        box-sizing: border-box;
+    }
+    div.right {
+        width: 50%;
+        float: right;
+        box-sizing: border-box;
+    }
+    div.Rleft {
+            width: 20%;
+            float: left;
+            box-sizing: border-box;
+        }
+        div.Rright {
+            width: 80%;
+            float: right;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+  </head>
+<body>
+<main>
+    <div class="container" >  
+        <div class="left">
+            <video width="320" height="240" autoplay playsinline muted id="video"></video>
+            <br><br>
+            <!--
+            <button type="button" class="btn btn-primary" id="pred_button" onclick="predict()">예측</button>
+            -->
+
+            <button type="button" class="btn btn-primary" id="testt" onclick="testt()">testt</button>
+
+            <div id="prediction"></div>
+            <div id="pScore"></div>
+        </div>
+        <div class="right">
+            <div class="Rleft">
+                <br><br>
+                <b>NOSHOW</b>
+                <br><br>
+                <b>NORMAL</b>
+                <br><br>
+                <b>TURTLE</b>
+                <br><br>
+                <b>CHIN</b>
+            </div>
+            <div id=GraphEelement class="Rright">
+                <br><br>
+                <svg id="myGraph" width="500" height="500">
+                </svg>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+-->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
+
+<script type="text/javascript">
+    let webcam, model;
+// Cnt 추가
+    let chinCnt = 0, normalCnt = 0, noshowCnt = 0 ,turtleCnt = 0   
+    let pScore = 0 
+// 그래프 데이터셋    
+    let dataSet = [2, 2, 2, 2];
+    let Cnt
+
+    async function app() {
+//        model = await mobilenet.load()
+//        model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs01/model.json')
+        model = await tf.loadLayersModel('https://raw.githubusercontent.com/neukkim/AiPosture/main/tfjs/model.json')
+				//웹캠 비디오 스트림을 텐서로 변환하기 위한 객체 생성, .capture()를 통해 이미지를 받아올 수 있음
+        webcam = await tf.data.webcam(video, {
+            resizeWidth: 224,
+            resizeHeight: 224,
+        });
+    }
+
+    app();
+//    predict();
+    setInterval(async function predict() {
+        let image = await webcam.capture();
+
+    //    image = tf.browser.fromPixels(image);
+            // 이미지 사이즈 조절, div(255) : 0-1 사이의 값으로 정규화
+    //    console.log(image)
+   //     console.log(PromiseResult)
+        image = tf.image.resizeBilinear(image, [224,224]).div(255);
+    //    console.log(image)
+            // 차원 확대(shape 변경, axis=0), (224, 244)를 (1, 224, 224)로 변환
+        image = tf.expandDims(image, 0)
+            // arraySync() : 텐서를 배열로 변환하여 반환
+            
+        pred = model.predict(image).arraySync();
+            // topk : top K 반환(예측 결과 중 가장 정확도가 높은 3개의 확률과 인덱스 반환)
+        const { values, indices } = tf.topk(pred, 4);
+        const index = indices.arraySync()[0];
+        const probability = values.arraySync()[0];
+ //   console.log(index, probability);
+    
+        let html = '';
+        for (let i=0; i<index.length; i++) {
+            html += `${imagenetLabels[index[i]]} : ${probability[i]}<br>`;
+            
+        }
+        document.getElementById('prediction').innerHTML = html;
+
+//        console.log("first prob" + probability[0])
+//        console.log("first index" + index[0]) 
+//        console.log(typeof index[0])
+
+        if(index[0] == 0){
+            chinCnt++
+            dataSet[3] = graphD_per(chinCnt)
+            console.log("chinCnt:" +  chinCnt)
+            console.log("dataSet[3]:" +  dataSet[3])
+        }
+        if(index[0] == 1){
+            normalCnt++
+            dataSet[1] = graphD_per(normalCnt)
+            console.log("normalCnt:" + normalCnt)
+            console.log("dataSet[1]:" +  dataSet[1])
+        }
+        if(index[0] == 2){
+            noshowCnt++
+            dataSet[0] = graphD_per(noshowCnt)
+            console.log("noshowCnt:" + noshowCnt)
+            console.log("dataSet[0]:" +  dataSet[0])
+  //          popup()
+        }
+        if(index[0] == 3){
+            turtleCnt++
+//            dataSet[2] = turtleCnt
+//            graphD_per(10)
+            dataSet[2] = graphD_per(turtleCnt)
+            console.log("dataSet[2]:" +  dataSet[2])
+ //           popup()
+            console.log("turtleCnt:" + turtleCnt)
+        }
+
+        pScore = normalCnt / (chinCnt + normalCnt + turtleCnt) * 100
+    //    pScore = chinCnt / (chinCnt + normalCnt + turtleCnt) * 100
+        pScore = parseInt(pScore)
+        console.log("pScore" + pScore)
+        document.getElementById('pScore').innerHTML = "자세점수: " + pScore;
+
+
+
+        function graphD_per(Cnt){
+            let GraphEelement = document.getElementById('GraphEelement');
+            let resultClientWidth = GraphEelement.clientWidth
+            //console.log("width:" + resultClientWidth)
+            Gresult = Cnt / (chinCnt + normalCnt + turtleCnt + noshowCnt) * resultClientWidth
+            return Gresult
+        }
+
+        function testt(){
+            dataSet[3] = 10
+            console.log("초기화")
+            console.log(dataSet)
+        }
+
+
+        
+        graphD()
+
+        //console.log(dataSet)
+        console.log()
+        
+
+    }, 3000);
+
+    function popup(){
+        var url = "http://localhost:8080/";
+        var name = "popup test";
+        var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+        window.open(url, name, option);
+    }
+
+    imagenetLabels = [
+        "chin",
+        "normal",
+        "noshow",
+        "turtle",
+    ];
+
+
+</script>
+</html>
