@@ -7,39 +7,9 @@ const hasher        = bkfd2Password();
 
 const passport = require('passport');
 
-router.get('/signout', function(req, res, next) {
-	req.logout(function(error) {
-        if (error) {
-            return next(error);
-        }
-        res.redirect('/');
-    });
-});
 
 
-router.get('/signin', async function(req, res) {
-    //userID를 view에 같이 넘겨주는 기능
-    let userId = null;
-    if (req.session.passport != undefined) {
-        userId = req.session.passport.user.user;
-    }
-    res.render('signin', {userId: userId});
-});
-router.post('/signin', passport.authenticate('local-login', {
-    successRedirect: '/',
-    failureRedirect: '/user/signin'
-}));
-
-router.get('/signup', async function(req, res) { 
-    //userID를 view에 같이 넘겨주는 기능
-    let userId = null;
-    if (req.session.passport != undefined) {
-        userId = req.session.passport.user.user;
-    }
-    res.render('signup', {userId: userId});
-});
-
-router.post('/signup', async function(req, res) {
+router.post('/posture', async function(req, res) {
     const id = req.body.id;
     const password = req.body.password;
     const name = req.body.name;

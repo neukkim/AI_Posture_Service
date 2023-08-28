@@ -15,6 +15,10 @@ app.use(
        secret: "sessionsecretsessionsecret",
     }),
 );
+
+
+
+
 //passport 초기화
 app.use(passport.initialize()); //req에 passport 설정 추가
 app.use(passport.session());    //req.session에 passport 데이터 추가

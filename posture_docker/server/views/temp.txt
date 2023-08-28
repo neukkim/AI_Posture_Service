@@ -21,32 +21,6 @@
     <link href="css/styles.css" rel="stylesheet" />
 </head>
 
-<style>
-    /* Your CSS code goes here */
-    #webcam-container {
-        width: 100%;
-        max-width: 800px;
-    }
-
-    #toggleButton {
-        align-self: flex-end;
-    }
-
-    .card-body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .card {
-        width: 90%;
-        /* Adjust the width to your preference */
-        margin: 0 auto;
-        /* Center the card horizontally */
-    }
-</style>
-
-
 <body class="d-flex flex-column h-100 bg-light">
     <main class="flex-shrink-0">
         <!-- Navigation-->
@@ -63,11 +37,11 @@
                         <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
                             <div class="card-body p-0">
                                 <div class="d-flex align-items-center">
-                                    <div id="webcam-container" class="mb-3"></div>
-                                    <button id="toggleButton" type="button" onclick="toggleFunctionality()">소리
-                                        끄기</button>
 
 
+                                    <button id="toggleButton" type="button" onclick="toggleFunctionality()">소리 끄기</button>
+
+                                    <div id="webcam-container"></div>
                                     <div id="label-container"></div>
                                     <script
                                         src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -124,7 +98,7 @@
                                                 audio.pause();
                                                 audio.currentTime = 0; //소리파일 처음부터 되게 초기화
                                             }
-
+                                            
 
                                         }
 
@@ -156,7 +130,7 @@
                                                 document.getElementById("turtlecntsoundValue").textContent = "turtlecntsound: " + turtlecntsound;
                                             }
                                         }
-
+                                        
 
                                         async function toggleFunctionality() {
                                             flag = 1 - flag; // Toggle flag between 0 and 1
