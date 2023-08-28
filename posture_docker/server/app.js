@@ -36,7 +36,9 @@ const postureRouter = require('./routes/posture');
 const posture2Router = require('./routes/posture2');
 const posture3Router = require('./routes/posture3');
 const posture4Router = require('./routes/posture4');
+const posture5Router = require('./routes/posture5');
 const webcamtestRouter = require('./routes/webcamtest');
+const testRouter = require('./routes/test');
 
 //라우트 설정
 app.use('/', mainRouter);
@@ -46,7 +48,8 @@ app.use('/posture', postureRouter);
 app.use('/posture2', posture2Router);
 app.use('/posture3', posture3Router);
 app.use('/posture4', posture4Router);
-app.use('/webcamtest', webcamtestRouter);
+app.use('/posture5', posture5Router);
+app.use('/test', testRouter);
 
 const PORT = 8080;
 app.listen(PORT, function() {

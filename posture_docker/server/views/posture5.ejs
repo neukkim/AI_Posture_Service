@@ -16,6 +16,7 @@
         <button type="button" class="btn btn-primary" id="pred_button" onclick="predict()">예측</button>
         -->
         <div id="prediction"></div>
+        <div id="pScore"></div>
     </div>
 </main>
 </body>
@@ -28,7 +29,8 @@
 <script type="text/javascript">
     let webcam, model;
 // Cnt 추가
-    let chinCnt = 0, normalCnt = 0, noshowCnt = 0 ,turtleCnt = 0    
+    let chinCnt = 0, normalCnt = 0, noshowCnt = 0 ,turtleCnt = 0   
+    let pScore = 0 
 
     async function app() {
 //        model = await mobilenet.load()
@@ -116,14 +118,21 @@
             console.log("turtleCnt:" + turtleCnt)
         }
 
+    //    pScore = normalCnt / (chinCnt + normalCnt + turtleCnt) * 100
+        pScore = chinCnt / (chinCnt + normalCnt + turtleCnt) * 100
+        pScore = parseInt(pScore)
+        console.log("pScore" + pScore)
+        document.getElementById('pScore').innerHTML = "자세점수: " + pScore;
+
+
     }, 3000);
 
     function popup(){
-            var url = "http://localhost:8080/";
-            var name = "popup test";
-            var option = "width = 500, height = 500, top = 100, left = 200, location = no"
-            window.open(url, name, option);
-        }
+        var url = "http://localhost:8080/";
+        var name = "popup test";
+        var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+        window.open(url, name, option);
+    }
 
     imagenetLabels = [
         "chin",
