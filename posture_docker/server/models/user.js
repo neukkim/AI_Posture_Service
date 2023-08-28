@@ -16,5 +16,14 @@ module.exports = {
             return {result: null, error: error};
         }
     },
+    DeleteUser: async function(id) {
+        try {
+            const result = await db.query('DELETE FROM user where id = ?', id);
+            return {result: result, error: null};
+        } catch (error) {
+            return {result: null, error: error};
+        }
+    },
+    
 
 }

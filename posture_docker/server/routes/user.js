@@ -67,4 +67,36 @@ router.post('/signup', async function(req, res) {
     }); //hasher
 });
 
+router.post('/mypage', async function(req, res) {
+    const id = req.body.id; // Assuming you're passing the user's ID in the request body
+
+    try {
+        const result = await UserModel.DeleteUser(id); // Assuming there's a deleteUser function in UserModel
+        if (result.error) {
+            console.log(result.error);
+            res.status(500).json({ error: 'An error occurred while deleting the user.' });
+        } else {
+            console.log('USER DELETED');
+            res.status(200).json({ message: 'User deleted successfully.' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'An error occurred while processing the request.' });
+    }
+
+    //req.logout(function(error) {
+      //  if (error) {
+        //    return next(error);
+        //}
+        //res.redirect('/');
+   // });
+
+
+    
+
+
+});
+
+
+
 module.exports = router;

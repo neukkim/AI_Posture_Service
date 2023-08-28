@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-
 const passport          = require('passport');
 const passportConfig    = require('./passport');
 const session           = require('express-session');
@@ -33,12 +32,17 @@ const mainRouter    = require('./routes/index');
 const userRouter    = require('./routes/user');
 const mypageRouter    = require('./routes/mypage');
 const postureRouter = require('./routes/posture');
+const tempRouter = require('./routes/temp');
+const teamRouter = require('./routes/team');
+
 
 //라우트 설정
 app.use('/', mainRouter);
 app.use('/user', userRouter);
 app.use('/mypage', mypageRouter);
 app.use('/posture', postureRouter);
+app.use('/temp', tempRouter);
+app.use('/team', teamRouter);
 
 const PORT = 8080;
 app.listen(PORT, function() {
